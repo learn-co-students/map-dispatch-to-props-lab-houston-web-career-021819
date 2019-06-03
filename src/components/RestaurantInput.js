@@ -2,18 +2,30 @@ import React, { Component } from 'react';
 import { addRestaurant } from '../actions/restaurants';
 import { connect } from 'react-redux';
 
-export class RestaurantInput extends Component {
+
+const mapStateToProps = state => {
+  // return { 
+  //   restaurants: state.restaurants,
+  //   name: state.name,
+  //   location: state.location 
+  // }
+}
+
+const mapDispatchToProps = {
+  handleOnSubmit: (e, state) =>{
+    e.preventDefault()
+    return {type:'ADD_RESTAURANT', restaurant: {name: state.name, location:state.location} }
+  }
+  // addRestaurant: (restaurant) =>({type: 'ADD_RESTAURANT', restaurants:restaurant})
+}
+ 
+// export default connect(mapStateToProps, mapDispatchToProps)(
+class _RestaurantInput extends Component {
 
   state = {
-    name: '',
-    location: ''
+    name: ''
   }
 
-  handleOnNameChange = event => {
-    this.setState({
-      name: event.target.value
-    });
-  }
 
   handleOnLocationChange = event => {
     this.setState({
@@ -21,18 +33,20 @@ export class RestaurantInput extends Component {
     });
   }
 
-  handleOnSubmit = event => {
-    event.preventDefault();
-    // add missing code
+  handleOnNameChange = e =>{
+    this.setState({
+      name: e.target.value
+    });
   }
+
 
   render() {
     return(
-      <form onSubmit={(event) => this.handleOnSubmit(event)}>
+      <form onSubmit={(e) => this.props.handleOnSubmit(e, this.state)}>
         <p>
           <input
             type="text"
-            onChange={(event) => this.handleOnNameChange(event)}
+            onChange={(e) => this.handleOnNameChange(e)}
             id="name"
             placeholder="restaurant name" />
         </p>
@@ -47,8 +61,12 @@ export class RestaurantInput extends Component {
       </form>
     );
   }
-};
-
+}
+// )
 
 //connect this component by wrapping RestaurantInput below
+const connector = connect(mapStateToProps, mapDispatchToProps)
+const RestaurantInput = connector(_RestaurantInput)
 export default RestaurantInput
+// export default connect (mapStateToProps, mapDispatchToProps)(RestaurantInput)
+
